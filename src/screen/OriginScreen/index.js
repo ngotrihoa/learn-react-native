@@ -1,82 +1,74 @@
-import React, { useState } from "react";
-import { ScrollView, Text, View } from "react-native";
-import { ScreenNavigation } from "../../common/const";
-import LayoutSignup from "../../components/LayoutSignup";
-import RadioInputItem from "../../components/RadioInputItem";
-import { FontAwesome } from "@expo/vector-icons";
-import classes from "./styles";
-import { TouchableOpacity } from "react-native";
-
-const listCountry = [
-  {
-    icon: "flag-checkered",
-    name: "Viet Nam",
-  },
-  {
-    icon: "flag-checkered",
-    name: "Lao",
-  },
-  {
-    icon: "flag-checkered",
-    name: "Thai Lan",
-  },
-  {
-    icon: "flag-checkered",
-    name: "Trung Quoc",
-  },
-  {
-    icon: "flag-checkered",
-    name: "Campuchia",
-  },
-  {
-    icon: "flag-checkered",
-    name: "Philippines",
-  },
-];
+import { FontAwesome } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ScreenNavigation } from '../../common/const';
+import LayoutSignup from '../../components/LayoutSignup';
+import {
+  handleSelectedCountry,
+  handleUnselectedCountry,
+} from '../../context/actions';
+import { useStoreContext } from '../../context/hooks';
+import { getSelectedCountries } from '../../context/selector';
+import classes from './styles';
+import { AntDesign } from '@expo/vector-icons';
+import { EvilIcons } from '@expo/vector-icons';
+import HeaderTitleIcon from '../../components/Header/HeaderTitleIcon';
 
 const OriginScreen = () => {
-  const [selected, setSelected] = useState([]);
-  const handleSelect = (item) => {
-    setSelected((prev) => {
-      if (prev.length >= 4) return prev;
-      return prev.concat(item);
-    });
+  const [state, dispatch] = useStoreContext();
+  const selectedCountries = getSelectedCountries(state.countries);
+
+  const handleSelect = (id, selected) => {
+    if (selected) dispatch(handleUnselectedCountry(id));
+    else dispatch(handleSelectedCountry(id));
   };
   return (
-    <LayoutSignup next={ScreenNavigation.SIGNUP}>
+    <LayoutSignup
+      next={ScreenNavigation.SIGNUP}
+      optionsHeader={{
+        HeaderTitle: () => <HeaderTitleIcon name='location-arrow' />,
+      }}
+    >
       <View style={classes.container}>
-        <Text
-          style={{
-            color: "white",
-            textAlign: "center",
-            fontSize: 18,
-            fontWeight: "700",
-          }}
+        <Text style={classes.title}>Origin:</Text>
+        <View
+          style={[
+            selectedCountries.length > 0 && classes.listSelected,
+            classes.list,
+          ]}
         >
-          Origin:
-        </Text>
-        <View style={[classes.listSelected, classes.list]}>
-          {selected &&
-            selected.map((item, index) => (
+          {selectedCountries.length > 0 &&
+            selectedCountries.map((item, index) => (
               <TouchableOpacity
                 key={item.name + index}
                 style={[classes.listItem, classes.listItemSelected]}
-                onPress={() => handleSelect(item)}
+                onPress={() => handleSelect(item.id, item.selected)}
               >
-                <FontAwesome name={item.icon} size={24} color="blue" />
+                <FontAwesome name={item.icon} size={24} color='blue' />
                 <Text style={classes.text}>{item.name}</Text>
+                <EvilIcons
+                  style={{ marginLeft: 10 }}
+                  name='close'
+                  size={18}
+                  color='white'
+                />
               </TouchableOpacity>
             ))}
         </View>
         <ScrollView style={classes.list}>
-          {listCountry.map((item, index) => (
+          {state.countries.map((item, index) => (
             <TouchableOpacity
               key={item.name + index}
-              style={classes.listItem}
-              onPress={() => handleSelect(item)}
+              style={[classes.listItem, item.selected && classes.itemSelected]}
+              onPress={() => handleSelect(item.id, item.selected)}
             >
-              <FontAwesome name={item.icon} size={24} color="blue" />
+              <FontAwesome name={item.icon} size={24} color='blue' />
               <Text style={classes.text}>{item.name}</Text>
+              {item.selected && (
+                <View style={{ marginLeft: 'auto' }}>
+                  <AntDesign name='checkcircle' size={24} color='white' />
+                </View>
+              )}
             </TouchableOpacity>
           ))}
         </ScrollView>

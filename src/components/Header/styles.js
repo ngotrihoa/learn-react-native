@@ -1,25 +1,23 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: "row",
-    paddingTop: 30,
     paddingHorizontal: 20,
-    position: "relative",
-    height: 100,
+    flexDirection: 'row',
+    paddingTop: 30,
+    alignItems: 'center',
+    paddingVertical: 30,
+    justifyContent: 'space-between',
   },
-  icon: {
-    width: 60,
-    height: 60,
-    borderRadius: 1000,
-    justifyContent: "center",
-    alignItems: "center",
-    borderStyle: "solid",
-    borderWidth: 2,
-    borderColor: "white",
-    position: "absolute",
-    left: "47%",
-    top: 30,
+  title: {
+    paddingLeft: 50,
+  },
+  goBack: {},
+  headerRight: {
+    width: 80,
+    color: 'white',
+    textDecorationLine: 'underline',
+    textAlign: 'right',
   },
 });
 

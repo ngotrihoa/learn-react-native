@@ -1,59 +1,65 @@
-import React, { useState } from "react";
-import { ScrollView, Text, TextInput, View } from "react-native";
-import { ScreenNavigation } from "../../common/const";
-import LayoutSignup from "../../components/LayoutSignup";
-import classes from "./styles";
+import React, { useState } from 'react';
+import { ScrollView, Text, TextInput, View } from 'react-native';
+import { ScreenNavigation } from '../../common/const';
+import HeaderTitleIcon from '../../components/Header/HeaderTitleIcon';
+import LayoutSignup from '../../components/LayoutSignup';
+import {
+  setDayOfBirth,
+  setMonthOfBirth,
+  setYearOfBirth,
+} from '../../context/actions';
+import { useStoreContext } from '../../context/hooks';
+import classes from './styles';
 
 const BirthDayScreen = () => {
-  const [birthDay, setBirthDay] = useState({ day: "", month: "", year: "" });
+  const [state, dispatch] = useStoreContext();
   const handleKeyPressDay = (value) => {
     if (value > 31) return;
-    setBirthDay((prev) => {
-      return { ...prev, day: value };
-    });
+    dispatch(setDayOfBirth(value));
   };
   const handleKeyPressMonth = (value) => {
     if (value > 12) return;
-    setBirthDay((prev) => {
-      return { ...prev, month: value };
-    });
+    dispatch(setMonthOfBirth(value));
   };
   const handleKeyPressYear = (value) => {
     if (value > new Date().getFullYear()) return;
-    setBirthDay((prev) => {
-      return { ...prev, year: value };
-    });
+    dispatch(setYearOfBirth(value));
   };
 
   return (
-    <LayoutSignup next={ScreenNavigation.ORIGIN}>
+    <LayoutSignup
+      next={ScreenNavigation.ORIGIN}
+      optionsHeader={{
+        HeaderTitle: () => <HeaderTitleIcon name='birthday-cake' />,
+      }}
+    >
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
-        keyboardShouldPersistTaps="handled"
+        keyboardShouldPersistTaps='handled'
       >
         <View style={{ marginTop: 20 }}>
           <Text style={classes.title}>Birth day:</Text>
-          <View style={classes.content} keyboardShouldPersistTaps="handled">
+          <View style={classes.content} keyboardShouldPersistTaps='handled'>
             <TextInput
-              keyboardType="numeric"
-              placeholder="DD"
+              keyboardType='numeric'
+              placeholder='DD'
               onChangeText={handleKeyPressDay}
-              value={birthDay.day}
+              value={state.birthDay.day}
               style={classes.input}
             />
-            <Text style={{ color: "#fff" }}>/</Text>
+            <Text style={{ color: '#fff' }}>/</Text>
             <TextInput
-              keyboardType="numeric"
-              placeholder="MM"
+              keyboardType='numeric'
+              placeholder='MM'
               style={classes.input}
-              value={birthDay.month}
+              value={state.birthDay.month}
               onChangeText={handleKeyPressMonth}
             />
-            <Text style={{ color: "#fff" }}>/</Text>
+            <Text style={{ color: '#fff' }}>/</Text>
             <TextInput
-              value={birthDay.year}
-              keyboardType="numeric"
-              placeholder="YY"
+              value={state.birthDay.year}
+              keyboardType='numeric'
+              placeholder='YY'
               style={classes.input}
               onChangeText={handleKeyPressYear}
             />
